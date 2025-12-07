@@ -17,7 +17,27 @@ func intToSlice(n int, sequence []int) []int {
 	return sequence
 }
 
-func isValid(id int) bool {
+func isValidPart2(id int) bool {
+	idStr := strconv.Itoa(id)
+
+	maxLenSeq := len(idStr) / 2
+
+	// All possible pattern lengths
+	for patternLen := 1; patternLen <= maxLenSeq; patternLen++ {
+		// Pattern must repeat at least twice
+		if len(idStr)%patternLen != 0 {
+			continue
+		}
+		// compare chunk repeated the correct number of times against the entire str
+		chunk := idStr[:patternLen]
+		if idStr == strings.Repeat(chunk, len(idStr)/patternLen) {
+			return false
+		}
+	}
+	return true
+}
+
+func isValidPart1(id int) bool {
 	var idSlice []int
 	idSlice = intToSlice(id, idSlice)
 
@@ -47,7 +67,8 @@ func main() {
 	rangeString := scanner.Text()
 	rangeSlice := strings.Split(rangeString, ",")
 
-	count := 0
+	countPart1 := 0
+	countPart2 := 0
 
 	for _, idRange := range rangeSlice {
 		rangeSlice := strings.Split(idRange, "-")
@@ -55,16 +76,19 @@ func main() {
 		start, _ := strconv.Atoi(rangeSlice[0])
 		end, _ := strconv.Atoi(rangeSlice[1])
 
-		println(start, end)
+		println("Range: ", start, end)
 
 		for i := start; i <= end; i++ {
-			if !isValid(i) {
-				println(i)
-				count += i
+			if !isValidPart1(i) {
+				countPart1 += i
+			}
+			if !isValidPart2(i) {
+				countPart2 += i
 			}
 		}
 	}
 
-	println("Count: ", count)
+	println("Count Part1: ", countPart1)
+	println("Count Part2: ", countPart2)
 
 }
